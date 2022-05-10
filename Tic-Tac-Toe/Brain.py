@@ -30,13 +30,39 @@ class Agent:
 
 
     def min_max(self, board, depth):
-        pass
+        l = board.legal_moves()
+
+        n = float("-inf")
+
+        n = max(l, key= lambda m : self.min_value(board.result(m), depth - 1))
+        return n
     
     def min_value(self, board, depth):
-        pass
+        l = board.legal_moves()
+
+        status = board.terminal_test()
+        if status > -1:
+            return board.utility(self.player, status)
+
+        if depth <= 0:
+            return board.check(self.player)
+        
+        n = float("inf")
+        for action in l:
+            n = min(n, self.max_value(board.result(action), depth -  1))
+        return n
 
     def max_value(self, board, depth):
-        pass
+        l = board.legal_moves()
 
+        status = board.terminal_test()
+        if status > -1:
+            return board.utility(self.player, status)
 
-    
+        if depth <= 0:
+            return board.check(self.player)
+        
+        n = float("-inf")
+        for action in l:
+            n = max(n, self.min_value(board.result(action), depth -  1))
+        return n
